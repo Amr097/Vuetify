@@ -3,3 +3,106 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+
+  // @media screen and (width> 137.75em) {
+  //   font-size: 90%;
+  // }
+
+  // @media screen and (width> 118.75em) {
+  //   font-size: 68%;
+  // }
+
+  // @media screen and (width< 79em) {
+  //   font-size: 55%;
+  // }
+
+  // @media screen and (width< 61.125em) {
+  //   font-size: 40%;
+  // }
+
+  // @media screen and (width< 25em) {
+  //   font-size: 35%;
+  // }
+
+  // @media screen and (width< 20em) {
+  //   font-size: 30%;
+  // }
+}
+
+body {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  width: 93.5%;
+  margin: 0 auto;
+
+  @media screen and (width< 50em) {
+    width: 100%;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  border: none;
+  outline: none;
+  background-color: inherit;
+
+  &:hover {
+    filter: brightness(110%);
+  }
+}
+
+a {
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(110%);
+  }
+}
+
+.bg-primary-2 {
+  background-color: var(--primary-2);
+}
+
+.bg-primary-1 {
+  background-color: var(--primary-1);
+}

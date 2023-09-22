@@ -1,10 +1,11 @@
 :root {
- grey-100: #ffffff;
- grey-200: #d4d4d4;
- grey-400: #71717a;
- primary-gradient: linear-gradient(45deg, #7C74EE , #39CABD);
- primary-1: #7C74EE;
- primary-2: #39CABD;
+  --grey-100: #ffffff;
+  --grey-200: #d4d4d4;
+  -grey-400: #71717a;
+  --primary-gradient: linear-gradient(45deg, #7c74ee, #39cabd);
+  --secondary-gradient: linear-gradient(45deg, #34495e, #41b883);
+  --secondary-gradient-1: linear-gradient(45deg, #41b883, #34495e 90% 100%);
+
+  --primary-1: #34495e;
+  --primary-2: #41b883;
 }
-
-

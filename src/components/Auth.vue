@@ -1,26 +1,41 @@
 <template>
-  <div class="fixed z-10 inset-0 overflow-y-auto hidden" id="modal">
+  <div
+    class="fixed z-10 inset-0 overflow-y-auto"
+    id="modal"
+    v-show="hideClass"
+    @click="closeModal($event)"
+  >
     <div
-      class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+      class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0 form-container"
     >
       <div class="fixed inset-0 transition-opacity">
         <div class="absolute inset-0 bg-gray-800 opacity-75"></div>
       </div>
 
       <!-- This element is to trick the browser into centering the modal contents. -->
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+      <span class="sm:inline-block sm:align-middle sm:h-screen" v-show="hideClass">&#8203;</span>
 
       <div
-        class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+        class="f-form inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+        id="modal-form"
       >
         <!-- Add margin if you want to see some of the overlay behind the modal-->
         <div class="py-4 text-left px-6">
           <!--Title-->
           <div class="flex justify-between items-center pb-4">
-            <p class="text-2xl font-bold">Your Account</p>
+            <p class="text-2xl font-bold">Join us & surf them sound waves.</p>
             <!-- Modal Close Button -->
-            <div class="modal-close cursor-pointer z-50">
-              <i class="fas fa-times"></i>
+            <div class="cursor-pointer z-50">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6 modal-close"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </div>
           </div>
 
@@ -28,112 +43,49 @@
           <ul class="flex flex-wrap mb-4">
             <li class="flex-auto text-center">
               <a
-                class="block rounded py-3 px-4 transition hover:text-white text-white bg-blue-600"
+                class="block rounded py-3 px-4 transition"
                 href="#"
+                @click.prevent="setLogin"
+                :class="{ 'hover:text-white text-white bg-primary-2 ': isLogin }"
                 >Login</a
               >
             </li>
             <li class="flex-auto text-center">
-              <a class="block rounded py-3 px-4 transition" href="#">Register</a>
+              <a
+                class="block rounded py-3 px-4 transition"
+                href="#"
+                @click.prevent="setRegister"
+                :class="{ 'hover:text-white text-white bg-primary-2 ': isRegister }"
+                >Register</a
+              >
             </li>
           </ul>
 
           <!-- Login Form -->
-          <form>
-            <!-- Email -->
-            <div class="mb-3">
-              <label class="inline-block mb-2">Email</label>
-              <input
-                type="email"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Enter Email"
-              />
-            </div>
-            <!-- Password -->
-            <div class="mb-3">
-              <label class="inline-block mb-2">Password</label>
-              <input
-                type="password"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Password"
-              />
-            </div>
-            <button
-              type="submit"
-              class="block w-full bg-purple-600 text-white py-1.5 px-3 rounded transition hover:bg-purple-700"
-            >
-              Submit
-            </button>
-          </form>
+          <div class="text-white text-center font-bold p-4 rounded mb-4" v-if="messageLogin.show">
+            {{ messageLogin.message }}
+          </div>
+          <LoginForm
+            :isLogin="isLogin"
+            :updateLoginState="updateLoginState"
+            :isLoadingLogin="isLoadingLogin"
+            :showMessageLogin="showMessageLogin"
+          />
           <!-- Registration Form -->
-          <form>
-            <!-- Name -->
-            <div class="mb-3">
-              <label class="inline-block mb-2">Name</label>
-              <input
-                type="text"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Enter Name"
-              />
-            </div>
-            <!-- Email -->
-            <div class="mb-3">
-              <label class="inline-block mb-2">Email</label>
-              <input
-                type="email"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Enter Email"
-              />
-            </div>
-            <!-- Age -->
-            <div class="mb-3">
-              <label class="inline-block mb-2">Age</label>
-              <input
-                type="number"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-              />
-            </div>
-            <!-- Password -->
-            <div class="mb-3">
-              <label class="inline-block mb-2">Password</label>
-              <input
-                type="password"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Password"
-              />
-            </div>
-            <!-- Confirm Password -->
-            <div class="mb-3">
-              <label class="inline-block mb-2">Confirm Password</label>
-              <input
-                type="password"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-                placeholder="Confirm Password"
-              />
-            </div>
-            <!-- Country -->
-            <div class="mb-3">
-              <label class="inline-block mb-2">Country</label>
-              <select
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
-              >
-                <option value="USA">USA</option>
-                <option value="Mexico">Mexico</option>
-                <option value="Germany">Germany</option>
-              </select>
-            </div>
-            <!-- TOS -->
-            <div class="mb-3 pl-6">
-              <input type="checkbox" class="w-4 h-4 float-left -ml-6 mt-1 rounded" />
-              <label class="inline-block">Accept terms of service</label>
-            </div>
-            <button
-              type="submit"
-              class="block w-full bg-purple-600 text-white py-1.5 px-3 rounded transition hover:bg-purple-700"
-            >
-              Submit
-            </button>
-          </form>
+          <div
+            class="text-white text-center font-bold p-4 rounded mb-4"
+            v-if="messageReg.show"
+            :class="messageVariant.variant"
+          >
+            {{ messageReg.message }}
+          </div>
+          <RegisterForm
+            :isRegister="isRegister"
+            :updateRegState="updateRegState"
+            :isLoadingReg="isLoadingReg"
+            :showMessageReg="showMessageReg"
+            :setMessageVariant="setMessageVariant"
+          />
         </div>
       </div>
     </div>
@@ -141,12 +93,92 @@
 </template>
 
 <script>
+import { mapState, mapWritableState } from 'pinia'
+import { useModalStore } from '../stores/Modal'
+import LoginForm from '../sub-components/LoginForm.vue'
+import RegisterForm from '../sub-components/RegisterForm.vue'
+import { ref, reactive } from 'vue'
 export default {
   name: 'Auth',
+  data() {
+    return { isLogin: true, isRegister: false }
+  },
+  computed: {
+    ...mapState(useModalStore, ['hideClass']),
+    ...mapWritableState(useModalStore, ['isOpen'])
+  },
+  methods: {
+    closeModal(event) {
+      const formSelector = document.querySelector('#modal-form')
+      const closeModalSelector = document.querySelector('.modal-close')
+      if (
+        event.target === closeModalSelector ||
+        (event.target !== formSelector && !formSelector.contains(event.target))
+      ) {
+        this.isOpen = false
+      }
+    },
+    setLogin() {
+      this.isLogin = true
+      this.isRegister = false
+    },
+    setRegister() {
+      this.isRegister = true
+      this.isLogin = false
+    }
+  },
+  components: { LoginForm, RegisterForm },
   setup() {
-    return {}
+    let isLoadingReg = ref(false)
+    let isLoadingLogin = ref(false)
+    let messageLogin = reactive({ show: false, message: '' })
+    let messageReg = reactive({ show: false, message: '' })
+    let messageVariant = reactive({ variant: '' })
+
+    const updateRegState = (state) => {
+      isLoadingReg.value = state
+    }
+
+    const updateLoginState = (state) => {
+      isLoadingLogin.value = state
+    }
+
+    const showMessageLogin = (state) => {
+      messageLogin.show = state.show
+      messageLogin.message = state.message
+    }
+
+    const showMessageReg = (state) => {
+      messageReg.show = state.show
+      messageReg.message = state.message
+    }
+
+    const setMessageVariant = (state) => {
+      messageVariant.variant = state.variant
+    }
+
+    return {
+      isLoadingReg,
+      isLoadingLogin,
+      messageLogin,
+      messageReg,
+      messageVariant,
+      updateRegState,
+      updateLoginState,
+      showMessageLogin,
+      showMessageReg,
+      setMessageVariant
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.form-container {
+  height: 100%;
+}
+.f-form {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+}
+</style>
