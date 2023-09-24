@@ -6,13 +6,22 @@
       <a href="#" class="ml-8 bg-clip-text text-transparent f-logo">Vuetify</a>
       <div class="flex flex-grow justify-end items-center">
         <ul class="flex flex-row justify-end mt-1 mr-6 gap-4">
-          <li class="listen-item transition duration-150 ease-in-out hover:scale-105">
+          <li
+            class="listen-item transition duration-150 ease-in-out hover:scale-105"
+            v-if="!userLoggedIn"
+          >
             <a class="px-2 text-white listen-btn f-header" href="#" @click.prevent="toggleAuthModal"
               >Listen Now</a
             >
           </li>
-          <li>
-            <a class="px-2 text-black f-header" href="#">Manage</a>
+
+          <li v-else>
+            <a
+              class="px-2 text-white f-header manage-btn transition duration-150 ease-in-out hover:scale-105"
+              href="#"
+              >Manage</a
+            >
+            <a class="px-2 text-grey f-header" href="#" @click="signUserOut">Sign out</a>
           </li>
         </ul>
       </div>
@@ -21,16 +30,26 @@
 </template>
 
 <script>
-import { mapStores } from 'pinia'
+import { mapStores, mapWritableState } from 'pinia'
 import { useModalStore } from '../stores/Modal'
+import useUserStore from '@/stores/User'
+
 export default {
   name: 'AppHeader',
   computed: {
-    ...mapStores(useModalStore)
+    ...mapStores(useModalStore),
+    ...mapWritableState(useUserStore, ['signout', 'userLoggedIn'])
   },
   methods: {
     toggleAuthModal() {
       this.modalStore.isOpen = !this.modalStore.isOpen
+    },
+    signUserOut() {
+      try {
+        this.signout()
+      } catch (err) {
+        return err
+      }
     }
   }
 }
@@ -88,6 +107,15 @@ export default {
       box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 4px;
     }
   }
+}
+
+.manage-btn {
+  display: inline-block;
+  background-image: var(--secondary-gradient-1);
+  padding: 0.4em 0.6em;
+  border-radius: 7px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  margin-right: 0.4rem;
 }
 
 .f-header {

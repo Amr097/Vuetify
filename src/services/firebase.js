@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 
 const firebaseConfig = {
@@ -17,9 +17,9 @@ const db = getFirestore(app)
 const auth = getAuth()
 
 const googleProvider = new GoogleAuthProvider()
-const userRef = collection(db, 'users')
+
 // const docsUers = getDocs(userRef).then((snapshot) => {
 //   return snapshot
 // })
 
-export { db, auth, googleProvider, userRef }
+export { db, auth, googleProvider }

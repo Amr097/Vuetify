@@ -5,6 +5,13 @@
     :validation-schema="schema"
     :initial-values="userData"
   >
+    <div
+      class="text-white text-center font-bold p-4 rounded mb-4"
+      v-if="messageReg.show"
+      :class="messageReg.variant"
+    >
+      {{ messageReg.message }}
+    </div>
     <!-- Name -->
     <div class="mb-3">
       <label class="inline-block mb-2">Name</label>
@@ -102,56 +109,48 @@
 </template>
 
 <script>
-import { auth, userRef } from '@/services/firebase'
-import { addDoc } from 'firebase/firestore'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-
+import { mapActions } from 'pinia'
+import useUserStore from '@/stores/User'
 export default {
   name: 'RegisterForm',
-  props: ['isRegister', 'isLoadingReg', 'updateRegState', 'showMessageReg', 'setMessageVariant'],
+  props: ['isRegister', 'isLoadingReg', 'updateRegState'],
   data() {
     return {
       userData: {
         Country: 'Egypt'
+      },
+      messageReg: {
+        show: false,
+        message: '',
+        variant: ''
       }
     }
   },
-  methods: {
-    async register(values) {
-      let userCred = null
 
-      const { Email: email, Password: password, Name: name, Age: age, Country: country } = values
+  methods: {
+    ...mapActions(useUserStore, { createUser: 'register' }),
+    async register(values) {
       this.updateRegState(true)
-      this.showMessageReg(true)
 
       try {
-        userCred = await createUserWithEmailAndPassword(auth, email, password)
-        try {
-          await addDoc(userRef, { email, name, age, country })
-        } catch (err) {
-          this.updateRegState(false)
-          this.setMessageVariant({ variant: 'bg-red-500' })
-          this.showMessageReg({
-            show: true,
-            message: 'An unexpected error occured. Please try again later.'
-          })
-        }
+        //firestore create user action
+        await this.createUser(values)
+        ////////////////////////////////////
 
         this.updateRegState(false)
-        this.setMessageVariant({ variant: 'bg-blue-500' })
-        this.showMessageReg({ show: true, message: 'Success! Your account has been created.' })
+
+        this.messageReg.show = true
+        this.messageReg.message = 'Success! Your account has been created.'
+        this.messageReg.variant = 'bg-blue-500'
       } catch (err) {
         this.updateRegState(false)
-        this.setMessageVariant({ variant: 'bg-red-500' })
-        this.showMessageReg({
-          show: true,
-          message: 'An unexpected error occured. Please try again later.'
-        })
-        console.log(err)
+
+        this.messageReg.show = true
+        this.messageReg.message = err.message
+        this.messageReg.variant = 'bg-red-500'
+
         return
       }
-
-      console.log(userCred)
     }
   }
 }

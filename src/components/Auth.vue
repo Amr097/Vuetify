@@ -62,29 +62,18 @@
           </ul>
 
           <!-- Login Form -->
-          <div class="text-white text-center font-bold p-4 rounded mb-4" v-if="messageLogin.show">
-            {{ messageLogin.message }}
-          </div>
+
           <LoginForm
             :isLogin="isLogin"
             :updateLoginState="updateLoginState"
             :isLoadingLogin="isLoadingLogin"
-            :showMessageLogin="showMessageLogin"
           />
           <!-- Registration Form -->
-          <div
-            class="text-white text-center font-bold p-4 rounded mb-4"
-            v-if="messageReg.show"
-            :class="messageVariant.variant"
-          >
-            {{ messageReg.message }}
-          </div>
+
           <RegisterForm
             :isRegister="isRegister"
             :updateRegState="updateRegState"
             :isLoadingReg="isLoadingReg"
-            :showMessageReg="showMessageReg"
-            :setMessageVariant="setMessageVariant"
           />
         </div>
       </div>
@@ -97,7 +86,7 @@ import { mapState, mapWritableState } from 'pinia'
 import { useModalStore } from '../stores/Modal'
 import LoginForm from '../sub-components/LoginForm.vue'
 import RegisterForm from '../sub-components/RegisterForm.vue'
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 export default {
   name: 'Auth',
   data() {
@@ -131,9 +120,6 @@ export default {
   setup() {
     let isLoadingReg = ref(false)
     let isLoadingLogin = ref(false)
-    let messageLogin = reactive({ show: false, message: '' })
-    let messageReg = reactive({ show: false, message: '' })
-    let messageVariant = reactive({ variant: '' })
 
     const updateRegState = (state) => {
       isLoadingReg.value = state
@@ -143,31 +129,11 @@ export default {
       isLoadingLogin.value = state
     }
 
-    const showMessageLogin = (state) => {
-      messageLogin.show = state.show
-      messageLogin.message = state.message
-    }
-
-    const showMessageReg = (state) => {
-      messageReg.show = state.show
-      messageReg.message = state.message
-    }
-
-    const setMessageVariant = (state) => {
-      messageVariant.variant = state.variant
-    }
-
     return {
       isLoadingReg,
       isLoadingLogin,
-      messageLogin,
-      messageReg,
-      messageVariant,
       updateRegState,
-      updateLoginState,
-      showMessageLogin,
-      showMessageReg,
-      setMessageVariant
+      updateLoginState
     }
   }
 }
