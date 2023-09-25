@@ -41,6 +41,18 @@ export default defineStore('user', {
           this.userLoggedIn = false
         }
       })
+    },
+    async checkForUser() {
+      let checker
+      await onAuthStateChanged(auth, (user) => {
+        if (user) {
+          checker = true
+        } else {
+          console.log(checker)
+        }
+      })
+
+      return checker
     }
   }
 })

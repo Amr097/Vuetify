@@ -1,27 +1,39 @@
 <template>
   <header id="header">
     <nav class="container w-full flex justify-start items-center py-5 px-4">
-      <a class="strip_tri" href="#"></a>
+      <router-link class="strip_tri" to="/"></router-link>
 
-      <a href="#" class="ml-8 bg-clip-text text-transparent f-logo">Vuetify</a>
+      <router-link
+        :to="{ name: 'home' }"
+        class="ml-8 bg-clip-text text-transparent f-logo"
+        exact-active-class="no-active"
+        >Vuetify</router-link
+      >
       <div class="flex flex-grow justify-end items-center">
         <ul class="flex flex-row justify-end mt-1 mr-6 gap-4">
           <li
             class="listen-item transition duration-150 ease-in-out hover:scale-105"
             v-if="!userLoggedIn"
           >
-            <a class="px-2 text-white listen-btn f-header" href="#" @click.prevent="toggleAuthModal"
+            <a class="px-2 text-white listen-btn f-header" @click.prevent="toggleAuthModal"
               >Listen Now</a
             >
           </li>
 
-          <li v-else>
-            <a
+          <router-link
+            class="px-2 text-black f-header transition duration-150 ease-in-out"
+            :to="{ name: 'about' }"
+            >About</router-link
+          >
+
+          <li v-if="userLoggedIn">
+            <router-link
               class="px-2 text-white f-header manage-btn transition duration-150 ease-in-out hover:scale-105"
-              href="#"
-              >Manage</a
-            >
-            <a class="px-2 text-grey f-header" href="#" @click="signUserOut">Sign out</a>
+              to="/manage"
+              exact-active-class="no-active"
+              >Manage
+            </router-link>
+            <a class="px-2 text-grey f-header" to="#" @click="signUserOut">Sign out</a>
           </li>
         </ul>
       </div>
@@ -33,6 +45,7 @@
 import { mapStores, mapWritableState } from 'pinia'
 import { useModalStore } from '../stores/Modal'
 import useUserStore from '@/stores/User'
+import { RouterLink } from 'vue-router'
 
 export default {
   name: 'AppHeader',
@@ -47,11 +60,15 @@ export default {
     signUserOut() {
       try {
         this.signout()
+        if (this.$route.name === 'manage') {
+          this.$router.push({ name: 'home' })
+        }
       } catch (err) {
         return err
       }
     }
-  }
+  },
+  components: { RouterLink }
 }
 </script>
 

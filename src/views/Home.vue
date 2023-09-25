@@ -1,5 +1,4 @@
 <template>
-  <AppHeader />
   <!-- Introduction -->
   <AppIntro />
   <!-- Main Content -->
@@ -7,20 +6,17 @@
   <!-- Player -->
   <AppPlayer />
   <!-- Auth Modal -->
-  <Auth />
 </template>
 
 <script>
 import useUserStore from '@/stores/User'
-import { auth } from './services/firebase'
+import { auth } from '../services/firebase'
 
 export default {
   name: 'Home',
   components: {
-    AppHeader,
     AppIntro,
     AppMain,
-    Auth,
     AppPlayer
   },
   computed: {
@@ -35,11 +31,9 @@ export default {
 </script>
 
 <script setup>
-import AppHeader from './components/AppHeader.vue'
-import AppIntro from './components/AppIntro.vue'
-import AppMain from './components/AppMain.vue'
-import Auth from './components/Auth.vue'
-import AppPlayer from './components/AppPlayer.vue'
+import AppIntro from '../components/AppIntro.vue'
+import AppMain from '../components/AppMain.vue'
+import AppPlayer from '../components/AppPlayer.vue'
 import { mapWritableState } from 'pinia'
 </script>
 

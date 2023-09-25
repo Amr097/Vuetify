@@ -1,13 +1,17 @@
 <template>
-  <Home />
+  <AppHeader />
+  <Auth />
+  <router-view />
 </template>
 
 <script>
-import Home from './views/Home.vue'
+import AppHeader from './components/AppHeader.vue'
+import Auth from './components/Auth.vue'
 export default {
   name: 'App',
   components: {
-    Home
+    AppHeader,
+    Auth
   }
 }
 </script>
