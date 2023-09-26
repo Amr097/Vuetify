@@ -22,24 +22,16 @@
         </div>
         <hr class="my-6" />
         <!-- Progess Bars -->
-        <div class="mb-4">
+        <div class="mb-4" v-for="file in uploads" :key="file.name">
           <!-- File Name -->
-          <div class="font-bold text-sm">Just another song.mp3</div>
+          <div class="font-bold text-sm">{{ file.name }}</div>
           <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
             <!-- Inner Progress Bar -->
-            <div class="transition-all progress-bar bg-blue-400" style="width: 75%"></div>
-          </div>
-        </div>
-        <div class="mb-4">
-          <div class="font-bold text-sm">Just another song.mp3</div>
-          <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
-            <div class="transition-all progress-bar bg-blue-400" style="width: 35%"></div>
-          </div>
-        </div>
-        <div class="mb-4">
-          <div class="font-bold text-sm">Just another song.mp3</div>
-          <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
-            <div class="transition-all progress-bar bg-blue-400" style="width: 55%"></div>
+            <div
+              class="transition-all progress-bar bg-blue-400"
+              :class="'bg-blue-500'"
+              :style="{ width: file.current_progess + '%' }"
+            ></div>
           </div>
         </div>
       </div>
@@ -49,12 +41,13 @@
 
 <script>
 import { storage } from '../services/firebase'
-import { ref, uploadBytes } from 'firebase/storage'
+import { ref, uploadBytesResumable } from 'firebase/storage'
 export default {
   name: 'Upload',
   data() {
     return {
-      is_dragover: false
+      is_dragover: false,
+      uploads: []
     }
   },
   methods: {
@@ -69,12 +62,14 @@ export default {
 
         const storageRef = ref(storage, 'music-main')
         const musicRef = ref(storageRef, `music/${file.name}`)
-        const musicUpload = uploadBytes(musicRef, file)
+        const musicUploadTask = uploadBytesResumable(musicRef, file)
 
-        oUpload(musicUpload, (snapshot) => {
-          const data = snapshot.val()
-          // Handle the data or trigger a function when data changes
-          console.log('Data changed:', data)
+        const uploadIndex =
+          this.uploads.push({ musicUploadTask, current_progress: 0, name: file.name }) - 1
+
+        musicUploadTask.on('state_changed', (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          this.uploads[uploadIndex].current_progess = progress
         })
       })
     }
