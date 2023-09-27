@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, collection } from 'firebase/firestore'
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 import { getStorage } from 'firebase/storage'
 
@@ -20,8 +20,7 @@ const auth = getAuth()
 
 const googleProvider = new GoogleAuthProvider()
 
-// const docsUers = getDocs(userRef).then((snapshot) => {
-//   return snapshot
-// })
+const songsCollection = collection(db, 'songs')
+const usersCollection = collection(db, 'users')
 
-export { db, auth, googleProvider, storage }
+export { db, auth, googleProvider, storage, songsCollection, usersCollection }

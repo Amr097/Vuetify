@@ -24,12 +24,15 @@
         <!-- Progess Bars -->
         <div class="mb-4" v-for="file in uploads" :key="file.name">
           <!-- File Name -->
-          <div class="font-bold text-sm">{{ file.name }}</div>
+          <div class="font-bold text-sm" :class="file.text_class">
+            <i :class="file.icon"></i>
+            {{ file.name }}
+          </div>
           <div class="flex h-4 overflow-hidden bg-gray-200 rounded">
             <!-- Inner Progress Bar -->
             <div
-              class="transition-all progress-bar bg-blue-400"
-              :class="'bg-blue-500'"
+              class="transition-all progress-bar"
+              :class="file.variant"
               :style="{ width: file.current_progess + '%' }"
             ></div>
           </div>
@@ -40,8 +43,10 @@
 </template>
 
 <script>
-import { storage } from '../services/firebase'
-import { ref, uploadBytesResumable } from 'firebase/storage'
+import { storage, auth, songsCollection } from '../services/firebase'
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { addDoc } from 'firebase/firestore'
+
 export default {
   name: 'Upload',
   data() {
@@ -65,12 +70,47 @@ export default {
         const musicUploadTask = uploadBytesResumable(musicRef, file)
 
         const uploadIndex =
-          this.uploads.push({ musicUploadTask, current_progress: 0, name: file.name }) - 1
+          this.uploads.push({
+            musicUploadTask,
+            current_progress: 0,
+            name: file.name,
+            variant: 'bg-blue-400',
+            icon: 'fas fa-spinner fa-spin',
+            text_class: ''
+          }) - 1
 
-        musicUploadTask.on('state_changed', (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          this.uploads[uploadIndex].current_progess = progress
-        })
+        musicUploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            this.uploads[uploadIndex].current_progess = progress
+          },
+          (error) => {
+            this.uploads[uploadIndex].variant = 'bg-red-400'
+            this.uploads[uploadIndex].icon = 'fa-solid fa-x'
+            this.uploads[uploadIndex].text_class = 'text-red-400'
+            console.log(error)
+          },
+          async () => {
+            const song = {
+              uid: auth.currentUser.uid,
+              display_name: auth.currentUser.displayName,
+              original_name: musicUploadTask.snapshot.ref.name,
+              modified_name: musicUploadTask.snapshot.ref.name,
+              genre: '',
+              comment_count: 0,
+              url: ''
+            }
+
+            song.url = await getDownloadURL(musicRef)
+
+            await addDoc(songsCollection, song)
+
+            this.uploads[uploadIndex].variant = 'bg-green-400'
+            this.uploads[uploadIndex].icon = 'fas fa-check'
+            this.uploads[uploadIndex].text_class = 'text-green-400'
+          }
+        )
       })
     }
   }
