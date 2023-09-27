@@ -3,7 +3,10 @@
     <div class="bg-white rounded border border-gray-200 relative flex flex-col">
       <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
         <span class="card-title">Upload</span>
-        <i class="fas fa-upload float-right text-green-400 text-2xl"></i>
+        <i
+          for="song-upload"
+          class="fas fa-upload float-right text-green-400 text-2xl cursor-pointer"
+        ></i>
       </div>
       <div class="p-6">
         <!-- Upload Dropbox -->
@@ -20,6 +23,7 @@
         >
           <h5>Drop your files here</h5>
         </div>
+        <input id="song-upload" type="file" multiple @change="upload($event)" class="mt-4" />
         <hr class="my-6" />
         <!-- Progess Bars -->
         <div class="mb-4" v-for="file in uploads" :key="file.name">
@@ -58,7 +62,7 @@ export default {
   methods: {
     upload(event) {
       this.is_dragover = false
-      const files = [...event.dataTransfer.files]
+      const files = event.dataTransfer ? [...event.dataTransfer.files] : [...event.target.files]
       files.forEach((file) => {
         if (file.type !== 'audio/mpeg') {
           console.log(file.type)
