@@ -116,7 +116,15 @@ export default {
           }
         )
       })
+    },
+    cancelUploads() {
+      this.uploads.forEach((upload) => {
+        upload.musicUploadTask.cancel()
+      })
     }
+  },
+  beforeUnmount() {
+    this.cancelUploads()
   }
 }
 </script>
