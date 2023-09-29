@@ -49,7 +49,7 @@
 <script>
 import { storage, auth, songsCollection } from '../services/firebase'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { addDoc } from 'firebase/firestore'
+import { addDoc, getDoc } from 'firebase/firestore'
 
 export default {
   name: 'Upload',
@@ -57,6 +57,12 @@ export default {
     return {
       is_dragover: false,
       uploads: []
+    }
+  },
+  props: {
+    addSong: {
+      type: Function,
+      required: true
     }
   },
   methods: {
@@ -108,11 +114,13 @@ export default {
 
             song.url = await getDownloadURL(musicRef)
 
-            await addDoc(songsCollection, song)
+            const newSong = await addDoc(songsCollection, song)
+            const newSongSnapshot = await getDoc(newSong)
 
             this.uploads[uploadIndex].variant = 'bg-green-400'
             this.uploads[uploadIndex].icon = 'fas fa-check'
             this.uploads[uploadIndex].text_class = 'text-green-400'
+            this.addSong(newSongSnapshot)
           }
         )
       })

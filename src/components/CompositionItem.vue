@@ -99,6 +99,7 @@ export default {
   },
   methods: {
     async edit(values) {
+      console.log(this.song.docID)
       try {
         this.show_alert = true
         this.disable_btn = 'opacity-50 pointer-events-none'
@@ -113,6 +114,7 @@ export default {
         this.disable_btn = ''
         this.updateSong(this.index, values)
       } catch (err) {
+        console.log(err)
         this.show_alert = true
         this.alert_variant = 'bg-red-500'
         this.alert_message = 'Failed to update song info.'
@@ -121,6 +123,7 @@ export default {
       }
     },
     async deleteSong() {
+      console.log(this.song.docID)
       try {
         await deleteDoc(doc(songsCollection, this.song.docID))
         const storageRef = ref(storage, 'music-main')

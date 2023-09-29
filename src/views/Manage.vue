@@ -2,7 +2,7 @@
   <!-- Main Content -->
   <section class="container mx-auto mt-6">
     <div class="md:grid md:grid-cols-3 md:gap-4">
-      <Upload ref="upload" />
+      <Upload ref="upload" :addSong="addSong" />
       <div class="col-span-2">
         <div class="bg-white rounded border border-gray-200 relative flex flex-col">
           <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
@@ -84,11 +84,7 @@ export default {
       const songsQueryById = query(songsCollection, where('uid', '==', auth.currentUser.uid))
       const snapshot = await getDocs(songsQueryById)
 
-      snapshot.forEach((document) => {
-        const song = { ...document.data(), docID: document.id }
-        this.user_songs.push(song)
-      })
-      console.log(this.user_songs)
+      snapshot.forEach(this.addSong)
     },
     updateSong(i, values) {
       this.user_songs[i].genre = values.genre
@@ -96,6 +92,10 @@ export default {
     },
     removeSong(index) {
       this.user_songs.splice(index, 1)
+    },
+    addSong(document) {
+      const song = { ...document.data(), docID: document.id }
+      this.user_songs.push(song)
     }
   },
   async created() {
