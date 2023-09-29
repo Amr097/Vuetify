@@ -13,10 +13,15 @@
             <!-- Composition Items -->
             <div
               class="border border-gray-200 p-3 mb-4 rounded"
-              v-for="song in user_songs"
+              v-for="(song, i) in user_songs"
               :key="song.docID"
             >
-              <CompositionItem :song="song" />
+              <CompositionItem
+                :song="song"
+                :index="i"
+                :updateSong="updateSong"
+                :removeSong="removeSong"
+              />
             </div>
           </div>
         </div>
@@ -84,6 +89,13 @@ export default {
         this.user_songs.push(song)
       })
       console.log(this.user_songs)
+    },
+    updateSong(i, values) {
+      this.user_songs[i].genre = values.genre
+      this.user_songs[i].modified_name = values.title
+    },
+    removeSong(index) {
+      this.user_songs.splice(index, 1)
     }
   },
   async created() {
