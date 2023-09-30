@@ -30,6 +30,7 @@
           type="text"
           class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
           placeholder="Enter Song Title"
+          @input="updateUnsavedFlag(true)"
         />
         <ErrorMessage name="title" class="text-red-600" />
       </div>
@@ -40,6 +41,7 @@
           type="text"
           class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition duration-500 focus:outline-none focus:border-black rounded"
           placeholder="Enter Genre"
+          @input="updateUnsavedFlag(true)"
         />
         <ErrorMessage name="genre" class="text-red-600" />
       </div>
@@ -95,6 +97,9 @@ export default {
     removeSong: {
       type: Function,
       required: true
+    },
+    updateUnsavedFlag: {
+      type: Function
     }
   },
   methods: {
@@ -113,6 +118,7 @@ export default {
         this.alert_variant = 'bg-green-500'
         this.disable_btn = ''
         this.updateSong(this.index, values)
+        this.updateUnsavedFlag(false)
       } catch (err) {
         console.log(err)
         this.show_alert = true
